@@ -23,9 +23,8 @@ public class EmployeeService {
 
         employeeUser.setRole("EMPLOYEE");
         employeeUser.setUsername(employeeDTO.getUsername());
-//        String hashPassword = new BCryptPasswordEncoder().encode(employeeDTO.getPassword());
-//        employeeUser.setPassword(hashPassword);
-        employeeUser.setPassword(employeeDTO.getPassword());
+        String hashPassword = new BCryptPasswordEncoder().encode(employeeDTO.getPassword());
+        employeeUser.setPassword(hashPassword);
         employeeUser.setName(employeeDTO.getName());
         employeeUser.setEmail(employeeDTO.getEmail());
 
@@ -57,7 +56,7 @@ public class EmployeeService {
         employeeRepository.save(oldEmployee);
     }
 
-    public void  deleteEmployee(Integer employee_id){
+    public void deleteEmployee(Integer employee_id) {
         Employee employee = employeeRepository.findEmployeeById(employee_id);
         if (employee == null) {
             throw new ApiException("customer not found");
