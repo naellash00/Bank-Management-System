@@ -42,7 +42,9 @@ public class ConfigurationSecurity {
                         "/api/v1/account/get/account-details/**",
                         "/api/v1/customer/deposit/**",
                         "/api/v1/customer/withdraw/**",
-                        "/api/v1/customer/transfer/**").hasAuthority("CUSTOMER")
+                        "/api/v1/customer/transfer/**",
+                        "/api/v1/customer/update",
+                        "/api/v1/customer/delete/**").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/account/get/customer/accounts").hasAnyAuthority("CUSTOMER", "ADMIN")
                 .requestMatchers("/api/v1/account/activate-account/**", "/api/v1/account/block-account/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()

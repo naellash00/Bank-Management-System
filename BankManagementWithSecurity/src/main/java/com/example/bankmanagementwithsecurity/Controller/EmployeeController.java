@@ -17,7 +17,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping("/register")
-    public ResponseEntity register(EmployeeInDTO employeeInDTO){
+    public ResponseEntity register(@RequestBody @Valid EmployeeInDTO employeeInDTO){
         employeeService.register(employeeInDTO);
         return ResponseEntity.status(200).body(new ApiResponse("registered successfully"));
     }
