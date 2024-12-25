@@ -37,6 +37,31 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
+    public void updateCustomer(Integer id, CustomerInDTO customerInDTO) {
+        Customer oldCustomer = customerRepository.findCustomerById(id);
+        MyUser customerUser = authRepository.findMyUserById(id);
+        if (oldCustomer == null || customerUser == null) {
+            throw new ApiException("customer not found");
+        }
+        customerUser.setUsername(customerInDTO.getUsername());
+        customerUser.setPassword(customerInDTO.getPassword());
+        customerUser.setName(customerInDTO.getName());
+        customerUser.setEmail(customerInDTO.getEmail());
+        authRepository.save(customerUser);
+
+        oldCustomer.setPhoneNumber(customerInDTO.getPhoneNumber());
+        customerRepository.save(oldCustomer);
+    }
+
+
+    public void  deleteCustomer(Integer customer_id){
+        Customer customer = customerRepository.findCustomerById(customer_id);
+        if (customer == null) {
+            throw new ApiException("customer not found");
+        }
+        customerRepository.delete(customer);
+    }
+
     public void deposit(Integer customer_id, Integer account_id, Double amount) {
         Customer customer = customerRepository.findCustomerById(customer_id);
         Account account = accountRepository.findAccountById(account_id);
@@ -49,11 +74,11 @@ public class CustomerService {
         if (!(account.getCustomer().getId().equals(customer.getId()))) {
             throw new ApiException("this customer cannot deposit to this account");
         }
-        account.setBalance(account.getBalance()+amount);
+        account.setBalance(account.getBalance() + amount);
         accountRepository.save(account);
     }
 
-    public void withdraw(Integer customer_id, Integer account_id, Double amount){
+    public void withdraw(Integer customer_id, Integer account_id, Double amount) {
         Customer customer = customerRepository.findCustomerById(customer_id);
         Account account = accountRepository.findAccountById(account_id);
         if (customer == null) {
@@ -65,16 +90,15 @@ public class CustomerService {
         if (!(account.getCustomer().getId().equals(customer.getId()))) {
             throw new ApiException("this customer cannot withdraw from this account");
         }
-        if(account.getBalance()>= amount){
+        if (account.getBalance() >= amount) {
             account.setBalance(account.getBalance() - amount);
             accountRepository.save(account);
-        }
-        else{
+        } else {
             throw new ApiException("balance not enough");
         }
     }
 
-    public void transferFunds(Integer customer_id, Integer account1_id, Integer account2_id, Double amount){
+    public void transferFunds(Integer customer_id, Integer account1_id, Integer account2_id, Double amount) {
         Customer customer = customerRepository.findCustomerById(customer_id);
         Account account1 = accountRepository.findAccountById(account1_id);
         Account account2 = accountRepository.findAccountById(account2_id);
@@ -87,13 +111,12 @@ public class CustomerService {
         if (!(account1.getCustomer().getId().equals(customer.getId()))) {
             throw new ApiException("this customer cannot transfer from this account");
         }
-        if(account1.getBalance()>= amount){
+        if (account1.getBalance() >= amount) {
             account1.setBalance(account1.getBalance() - amount);
             account2.setBalance(account2.getBalance() + amount);
             accountRepository.save(account1);
             accountRepository.save(account2);
-        }
-        else{
+        } else {
             throw new ApiException("balance not enough to transfer");
         }
     }
